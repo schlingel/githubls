@@ -1,0 +1,34 @@
+githubls
+========
+:author: Martin Keiblinger
+
+`githubls` is a simple command line utility tool, written as part of a Github backup script. The purpose of the tool is to provide a list of repositories of a given user. Furthermore, the tool has the ability to provide clone URLs which are directly usable - even for private repositories - without furhter setup except a `git` command line tool.
+
+The tool is build with https://nodejs.org/en/[node] and https://www.npmjs.com/package/pkg[pkg] for packaging the app for the different platforms.
+
+## Usage
+
+To retrieve a list of repositories, you have to define which *user* is retreiving the repositories and a corresponding https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token[access token].
+
+If not provided, the tool will tell you what's missing.
+
+.Simple Output
+----
+> ./githubls-linux 
+Optionen:
+      --version   Version anzeigen                                     [boolean]
+  -u, --user      Github user name                                [erforderlich]
+  -t, --token     Access Token of Github required for REST API    [erforderlich]
+  -p, --password  Password of Github user
+      --help      Hilfe anzeigen                                       [boolean]
+
+Fehlende Argumente: user, token
+User and token are required
+----
+
+## Building
+
+The script is very simple and only pulls in two dependencies for the command line args parsing and a HTTP network client library.
+
+To get started with the app, you have to install the dependencies:
+
