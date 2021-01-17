@@ -30,5 +30,23 @@ User and token are required
 
 The script is very simple and only pulls in two dependencies for the command line args parsing and a HTTP network client library.
 
-To get started with the app, you have to install the dependencies:
+These are the simple steps to get the tool for local development up and running:
 
+.Initial Checkout
+----
+> git clone https://github.com/schlingel/githubls.git
+----
+
+After the initial checkout, you have to install the dependencies.
+
+.Install Dependencies
+----
+> npm i
+----
+
+Node you're ready to start development. You may test if the tool is working by invoking `node index.js`. When you're ready, you may package the app.
+
+.Package app
+----
+> npm run package
+----
