@@ -39,11 +39,17 @@ function clearToken(token) {
     return result;
 }
 
-function listRepositories(creds) {
+function fetchAllRepositories(creds, params, previous_repos) {
     const token = Buffer.from(`${creds.user}:${creds.token}`).toString('base64');
     const authHeader = `Basic ${token}`;
+    params = params || {};
+    params.per_page = 100;
 
-    fetch('https://api.github.com/user/repos', {
+    const paramTokens = Object.keys(params)
+        .map(key => `${key}=${params[key]}`)
+        .join('&');
+
+    return fetch(`https://api.github.com/user/repos?${paramTokens}`, {
         method: 'GET',
         headers: {
             'Content-Type' : 'application/json',
@@ -53,6 +59,26 @@ function listRepositories(creds) {
     .then(res => res.json())
     .then(repos => {
         if (!!repos) {
+            if (repos.length === params.per_page) {
+                const page = (typeof params.page !== 'number') ? 2 : params.page + 1;
+                params.page = page;
+
+                return fetchAllRepositories(creds, params, [
+                    ...repos,
+                    ...previous_repos
+                ]);
+            }
+
+            return Promise.resolve([ ...repos, ...previous_repos ]);
+        } else {
+            throw new Error('ERROR: Could not read repositories');
+        }
+    });
+}
+
+function listRepositories(creds) {
+    fetchAllRepositories(creds, {}, [])
+        .then(repos => {
             repos.map(repo => repo.clone_url)
                 .map(repoUrl => {
                     if (creds.password) {
@@ -63,10 +89,10 @@ function listRepositories(creds) {
                     }
                 })
                 .forEach(repoUrl => console.log(repoUrl));
-        } else {
-            console.error('ERROR: Could not read repositories');
-        }
-    });
+        },
+        cause => {
+            console.log(cause);
+        });
 }
 
 const argv = yargs(hideBin(process.argv))
